@@ -13,8 +13,8 @@ export default class Gameboard {
   #rowsCount;
   #colsCount;
 
-  constructor(targetControls, height, width, rowsCount, colsCount) {
-    this.#targetControls = targetControls;
+  constructor( height, width, rowsCount, colsCount) {
+    
     this.#height = height;
     this.#width = width;
     this.#rowsCount = rowsCount;
@@ -36,8 +36,11 @@ export default class Gameboard {
       })
       .join("");
 
-    this.#gameboardDOM.addEventListener("click");
-    this.#gameboardDOM.addEventListener("touchstart");
+   
+  }
+
+  set targetControls(targetControls){
+    this.#targetControls = targetControls;
   }
 
   get pathfinderData() {
@@ -57,9 +60,9 @@ export default class Gameboard {
 
   updateTiles(idsArray, color){
 
-    idsArray.array.forEach(element => {
-        
-    });
+    idsArray.forEach(id => {
       this.#allTiles[id].recolor(color)
+    });
+      
   }
 }

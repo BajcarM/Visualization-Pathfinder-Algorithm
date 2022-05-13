@@ -10,7 +10,7 @@ export default class Tile {
 
   get tileHTML() {
     return `
-        <div class="tile tile-empty" data-id="${this.#id}" 
+        <div class="tile tile__empty" data-id="${this.#id}" 
         style="height: ${this.#size}px; width: ${this.#size}px">
         </div>`;
   }
@@ -26,6 +26,6 @@ export default class Tile {
   }
 
   recolor(color) {
-    this.#tileDOM.className = `tile tile-${color}`;
+    this.#tileDOM.className = `tile tile__${color}`;
   }
 }
