@@ -43,14 +43,14 @@ export default class Controls {
     this.#gameboardDOM.addEventListener("mousedown", (e) => {
       e.preventDefault();
       this.#mouseIsDown = true;
-      signalToGameboard(e.target.dataset.id, "mousedown");
+      signalToGameboard(e.target.dataset.id, "mousedown", this.#buttonActive);
     });
     window.addEventListener("mouseup", (e) => {
       e.preventDefault();
-      this.#mouseIsDown = false;
       if (e.target.dataset.id) {
         signalToGameboard(e.target.dataset.id, "mouseup");
       }
+      this.#mouseIsDown = false;
     });
     this.#gameboardDOM.addEventListener("mouseover", (e) => {
       e.preventDefault();
@@ -72,16 +72,22 @@ export default class Controls {
   }
 
   buttonClicked(targetId) {
+    if (this.#targetGameboard.working) {
+      return;
+    }
     switch (targetId) {
       case 3:
         this.#targetGameboard.generateMaze();
         break;
       case 4:
-        this.#targetGameboard.pathfinder();
-        this.switchActivBtn(targetId);
+        this.#targetGameboard.pathfinder("slow");
+        this.switchActivBtn(null);
+        this.changeCursor();
         break;
       case 5:
         this.#targetGameboard.resetBoard();
+        this.switchActivBtn(null);
+        this.changeCursor();
         break;
       default:
         this.switchActivBtn(targetId);

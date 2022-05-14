@@ -8,6 +8,10 @@ export default class Tile {
     this.#size = size;
   }
 
+  get id() {
+    return this.#id;
+  }
+
   get tileHTML() {
     return `
         <div class="tile tile__empty" data-id="${this.#id}" 
@@ -15,11 +19,11 @@ export default class Tile {
         </div>`;
   }
 
-//   set tileSize(size) {
-//     this.#size = size;
-//     this.#tileDOM.style.height = `${this.#size}px`;
-//     this.#tileDOM.style.width = `${this.#size}px`;
-//   }
+  //   set tileSize(size) {
+  //     this.#size = size;
+  //     this.#tileDOM.style.height = `${this.#size}px`;
+  //     this.#tileDOM.style.width = `${this.#size}px`;
+  //   }
 
   grabTileDOM() {
     this.#tileDOM = document.querySelector(`[data-id="${this.#id}"]`);
