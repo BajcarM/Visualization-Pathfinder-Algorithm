@@ -6,7 +6,7 @@ export default class Controls {
   #gameboardDOM;
   #buttonsDOM;
 
-  #buttons = ["Start", "End", "Wall", "Maze", "Begin", "Reset"];
+  #buttons = ["Nodes", "Wall", "Maze", "Start", "Reset"];
   #buttonActive = null;
 
   #mouseIsDown = false;
@@ -28,6 +28,56 @@ export default class Controls {
     this.addListeners();
   }
 
+  set working(process) {
+    switch (process) {
+      case "ready":
+        this.changeCursor("initial");
+        this.#buttonsDOM.forEach((button) => {
+          button.classList.remove("active");
+          button.classList.remove("disabled");
+        });
+
+        break;
+      case "placingNodes":
+        this.changeCursor("node");
+        this.#buttonsDOM[0].classList.add("active");
+        this.#buttonsDOM[1].classList.add("disabled");
+        this.#buttonsDOM[2].classList.add("disabled");
+        this.#buttonsDOM[3].classList.add("disabled");
+        break;
+
+      case "placingWall":
+        this.changeCursor("wall");
+        this.#buttonsDOM[1].classList.add("active");
+
+        break;
+
+      case "maze":
+        this.changeCursor("loading");
+        this.#buttonsDOM.forEach((button) => {
+          button.classList.add("disabled");
+        });
+        this.#buttonsDOM[2].classList.add("active");
+
+        break;
+      case "findingPath":
+        this.changeCursor("loading");
+        this.#buttonsDOM.forEach((button) => {
+          button.classList.add("disabled");
+        });
+        this.#buttonsDOM[3].classList.add("active");
+
+        break;
+      case "pathFound":
+        this.changeCursor("initial");
+        this.#buttonsDOM.forEach((button) => {
+          button.classList.add("disabled");
+        });
+        this.#buttonsDOM[4].classList.remove("disabled");
+        break;
+    }
+  }
+
   set targetGameboard(targetGameboard) {
     this.#targetGameboard = targetGameboard;
   }
@@ -35,65 +85,107 @@ export default class Controls {
   addListeners() {
     this.#buttonsDOM.forEach((button) => {
       button.addEventListener("click", (e) => {
-        this.buttonClicked(e.target.dataset.btn);
+        if (!e.target.classList.contains("disabled")) {
+          this.#targetGameboard.buttonClicked(e.target.dataset.btn);
+        }
+        // this.buttonClicked(e.target);
       });
-      button.addEventListener("touchstart", this.buttonClicked(e));
+      // button.addEventListener("touchstart", this.buttonClicked(e));
     });
 
-    this.#gameboardDOM.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      this.#mouseIsDown = true;
-      signalToGameboard(e.target.dataset.id, "mousedown", this.#buttonActive);
-    });
-    window.addEventListener("mouseup", (e) => {
-      e.preventDefault();
+    this.#gameboardDOM.addEventListener("click", (e) => {
       if (e.target.dataset.id) {
-        signalToGameboard(e.target.dataset.id, "mouseup");
+        this.#targetGameboard.tileClicked(e.target.dataset.id);
       }
-      this.#mouseIsDown = false;
     });
     this.#gameboardDOM.addEventListener("mouseover", (e) => {
-      e.preventDefault();
-      signalToGameboard(e.target.dataset.id, "mouseover");
+
+      this.#targetGameboard.mouseEvent(e.target.dataset.id, 'mouseover', this.#mouseIsDown)
+
+  
+      // signalToGameboard(e.target.dataset.id, "mouseover");
     });
 
-    this.#gameboardDOM.addEventListener("touchstart", (e) => {
-      e.preventDefault();
+
+    this.#gameboardDOM.addEventListener("mousedown", (e) => {
+e.preventDefault()
+
       this.#mouseIsDown = true;
-      signalToGameboard(e.target.dataset.id, "mousedown");
+      this.#targetGameboard.mouseEvent(e.target.dataset.id, 'mousedown', this.#mouseIsDown)
+
+      // signalToGameboard(e.target.dataset.id, "mousedown", this.#buttonActive);
     });
-    window.addEventListener("touchend", (e) => {
-      e.preventDefault();
-      this.#mouseIsDown = false;
-      if (e.target.dataset.id) {
-        signalToGameboard(e.target.dataset.id, "mouseup");
+    window.addEventListener("mouseup", (e) => {
+      if (e.target.dataset.id&&this.#mouseIsDown) {
+        this.#targetGameboard.mouseEvent(e.target.dataset.id, 'mouseup', this.#mouseIsDown)
+
+
+        // signalToGameboard(e.target.dataset.id, "mouseup");
       }
+      this.#targetGameboard.mouseEvent('outside', 'mouseup', this.#mouseIsDown)
+
+      this.#mouseIsDown = false;
     });
+    
+
+    // this.#gameboardDOM.addEventListener("touchstart", (e) => {
+    //   e.preventDefault();
+    //   this.#mouseIsDown = true;
+    //   signalToGameboard(e.target.dataset.id, "mousedown");
+    // });
+    // window.addEventListener("touchend", (e) => {
+    //   e.preventDefault();
+    //   this.#mouseIsDown = false;
+    //   if (e.target.dataset.id) {
+    //     signalToGameboard(e.target.dataset.id, "mouseup");
+    //   }
+    // });
   }
 
-  buttonClicked(targetId) {
-    if (this.#targetGameboard.working) {
-      return;
-    }
-    switch (targetId) {
-      case 3:
-        this.#targetGameboard.generateMaze();
-        break;
-      case 4:
-        this.#targetGameboard.pathfinder("slow");
-        this.switchActivBtn(null);
-        this.changeCursor();
-        break;
-      case 5:
-        this.#targetGameboard.resetBoard();
-        this.switchActivBtn(null);
-        this.changeCursor();
-        break;
-      default:
-        this.switchActivBtn(targetId);
-        this.changeCursor();
-        break;
-    }
+  // buttonClicked(target) {
+  //   if (!target.classList.contains("available")) {
+  //     return;
+  //   }
+
+  //   switch (target.dataset.id) {
+  //     case 0:
+  //       this.#targetGameboard.buttonNodes();
+  //       break;
+  //   }
+
+    // if (this.#targetGameboard.working) {
+    //   return;
+    // }
+    // switch (targetId) {
+
+    //   case 0:
+
+    //     break;
+    //   case 2:
+    //     this.#targetGameboard.generateMaze();
+    //     break;
+    //   case 3:
+    //     this.#targetGameboard.pathfinder("slow");
+    //     this.switchActivBtn(null);
+    //     this.changeCursor();
+    //     break;
+    //   case 4:
+    //     this.#targetGameboard.resetBoard();
+    //     this.switchActivBtn(null);
+    //     this.changeCursor();
+    //     break;
+    //   default:
+    //     this.switchActivBtn(targetId);
+    //     this.changeCursor();
+    //     break;
+    // }
+  // }
+
+  flashBtn(id) {
+    this.#buttonsDOM[id].classList.add("highlight");
+    setTimeout(() => {
+      this.#buttonsDOM[id].classList.remove("highlight");
+    }, 500);
   }
 
   switchActivBtn(targetId) {
@@ -106,10 +198,8 @@ export default class Controls {
     });
   }
 
-  changeCursor() {
-    document.querySelector("main").className = this.#buttonActive
-      ? `cursor-${this.#buttons[this.#buttonActive]}`
-      : `cursor-initial`;
+  changeCursor(cursor) {
+    document.querySelector("main").className = `cursor-${cursor}`;
   }
 
   signalToGameboard(target, event) {
