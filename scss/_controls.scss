@@ -1,0 +1,21 @@
+.display{
+    min-height: 100px;
+    width: 100%;
+    background-color: rgb(213, 213, 213);
+}
+
+.controls{
+    @include grid-center;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2rem;
+
+    .button{
+        @include grid-center;
+        font-size: 1.5rem;
+        height: 100px;
+        width: 80px;
+        background-color: white;
+        border:  1px outset rgb(117, 117, 117);
+        
+    }
+}

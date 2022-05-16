@@ -30,6 +30,7 @@ export default class Tile {
   }
 
   recolor(color) {
+    
     this.#tileDOM.className = `tile tile__${color}`;
   }
 }

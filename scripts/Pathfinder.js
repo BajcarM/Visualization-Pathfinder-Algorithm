@@ -1,84 +1,104 @@
 export default class Pathfinder {
   static findPath(pathfinderData, pathNodes) {
-    const pathfinderData = pathfinderData;
-
     const colsCount = pathfinderData.colsCount;
     const allTiles = pathfinderData.allTiles;
     let wallTiles = pathfinderData.wallTiles;
-    let pathNodes = pathNodes;
 
-    let remainingTiles = allTiles.filter((tile) => !wallTiles.includes(tile));
+    let remainingTiles = allTiles.reduce((acc, tile) => {
+      if (!wallTiles.includes(tile)) {
+        acc.push(tile);
+      }
+
+      return acc;
+    }, []);
 
     let stepsStack = [[pathNodes[0]]];
 
-    let nextStep;
+    let nextStep = [[pathNodes[0]]];
 
-    while (nextStep.length > 0) {
+    while (nextStep.length > 0 && nextStep.indexOf(pathNodes[1]) < 0) {
       let currentStep = nextStep;
-      nextStep = remainingTiles.reduce((acc, tile) => {
-        currentStep.forEach((curTile) => {
-          if (
-            tile === curTile + 1 ||
-            tile === curTile - 1 ||
-            tile === curTile + colsCount ||
-            tile === curTile - colsCount
-          ) {
-            acc.push(tile);
-          }
-        });
+
+      let accumulator = [];
+      for (let curTile of currentStep) {
+        curTile = parseInt(curTile);
+        if (remainingTiles.includes(curTile + colsCount)) {
+          accumulator.push(curTile + colsCount);
+        }
+
+        if (remainingTiles.includes(curTile - colsCount)) {
+          accumulator.push(curTile - colsCount);
+        }
+        if (
+          remainingTiles.includes(curTile + 1) &&
+          (curTile + 1) % colsCount > 0
+        ) {
+          accumulator.push(curTile + 1);
+        }
+        if (remainingTiles.includes(curTile - 1) && curTile % colsCount > 0) {
+          accumulator.push(curTile - 1);
+        }
+      }
+
+      nextStep = accumulator;
+
+      if (nextStep.length > 0) {
+        stepsStack.push(nextStep);
+      } else {
+        stepsStack = ["noPath"];
+      }
+
+      remainingTiles = remainingTiles.reduce((acc, tile) => {
+        if (nextStep.indexOf(tile) < 0) {
+          acc.push(tile);
+        }
+
         return acc;
       }, []);
-
-      nextStep.length > 0
-        ? stepsStack.push(nextStep)
-        : stepsStack.push(["noPath"]);
-
-      remainingTiles = remainingTiles.filter(
-        (tile) => !nextStep.includes(tile)
-      );
-
-      if (nextStep.includes(pathNodes[1])) {
-        stepsStack.push([pathNodes[1]]);
-      }
     }
 
-    path = this.pathBack(stepsStack);
+    const buffer = stepsStack.map((step) => {
+      return step;
+    });
+
+    const pathBack = (arg) => {
+      let stack = arg;
+
+      if (stack === ["noPath"]) {
+        return "noPath";
+      }
+
+      stack.pop();
+
+      let path = [pathNodes[1]];
+
+      while (stepsStack.length > 0) {
+        const currentStep = stack.pop();
+
+        let up = currentStep.indexOf(path[path.length - 1] - colsCount);
+        let down = currentStep.indexOf(path[path.length - 1] + colsCount);
+        let right = currentStep.indexOf(path[path.length - 1] + 1);
+        let left = currentStep.indexOf(path[path.length - 1] - 1);
+
+        if (up >= 0) {
+          path.push(currentStep[up]);
+        } else if (down >= 0) {
+          path.push(currentStep[down]);
+        } else if (right >= 0) {
+          path.push(currentStep[right]);
+        } else if (left >= 0) {
+          path.push(currentStep[left]);
+        }
+      }
+
+      return path;
+    };
+
+    let path = pathBack(stepsStack);
 
     return {
-      stepsStack: stepsStack,
+      stepsStack: buffer,
       path: path,
     };
-  }
-
-  pathBack(stepsStack) {
-    let stepsStack = stepsStack;
-
-    if (stepsStack[stepsStack.length - 1] === ["noPath"]) {
-      return "noPath";
-    }
-
-    let path = [stepsStack.pop()[0]];
-
-    for (let i = 0; i < stepsStack.length; i++) {
-      path.push(
-        stepsStack.pop().reduce((acc, tile) => {
-          if (acc) {
-            return acc;
-          }
-
-          if (
-            path[path.length - 1] === tile + 1 ||
-            path[path.length - 1] === tile - 1 ||
-            path[path.length - 1] === tile + colsCount ||
-            path[path.length - 1] === tile - colsCount
-          ) {
-            acc = tile;
-          }
-          return acc;
-        }, null)
-      );
-    }
-
-    return path;
   }
 }

@@ -5,58 +5,74 @@ export default class Maze {
 
     // Verticals
 
-    for (i = 0; i < rowsCount; i++) {
+    for (let i = 0; i < rowsCount; i++) {
       for (
-        j = Math.floor(colsCount / 4);
+        let j = Math.floor(colsCount / 4);
         j < colsCount;
         j += Math.floor(colsCount / 4) + 1
       ) {
-        walls.push(i * rowsCount + j);
+        walls.push(i * colsCount + j);
       }
     }
 
     // Horizontals
 
     for (
-      i = Math.floor(rowsCount / 4);
+      let i = Math.floor(rowsCount / 4);
       i < rowsCount;
       i += Math.floor(rowsCount / 4) + 1
     ) {
-      for (j = 0; j < colsCount; j++) {
-        walls.push(i * rowsCount + j);
+      for (let j = 0; j < colsCount; j++) {
+        walls.push(i * colsCount + j);
       }
     }
 
     const nodes = [
       Math.floor(rowsCount / 2) * colsCount + Math.floor(colsCount / 2),
       Math.floor(rowsCount / 4) * colsCount + Math.floor(colsCount / 4),
-      Math.floor(rowsCount / 4) * colsCount + Math.floor(colsCount / 4) * 3,
-      Math.floor(rowsCount / 4) * 3 * colsCount + Math.floor(colsCount / 4),
-      Math.floor(rowsCount / 4) * 3 * colsCount + Math.floor(colsCount / 4) * 3,
+      Math.floor(rowsCount / 4) * colsCount + Math.floor((colsCount * 3) / 4),
+      Math.floor((rowsCount * 3) / 4) * colsCount + Math.floor(colsCount / 4),
+      Math.floor((rowsCount * 3) / 4) * colsCount +
+        Math.floor((colsCount * 3) / 4),
     ];
 
-    nodes.forEach((node, nodeIndex) => {
-      const directions = [+1, -1 + colsCount, -colsCount];
-      pathWays.push(
-        directions
-          .map((dir, index) => {
-            return index < 2
-              ? node +
-                  dir *
-                    Math.floor(
-                      Math.random() *
-                        Math.floor(colsCount / (2 * (1 + (nodeIndex > 0))))
-                    )
-              : node +
-                  dir *
-                    Math.floor(
-                      Math.random() *
-                        Math.floor(rowsCount / (2 * (1 + (nodeIndex > 0))))
-                    );
-          })
-          .splice(Math.floor(Math.random() * 4), 1)
-      );
+    const directions = [+1, -1, +colsCount, -colsCount];
+
+    let remainWall = Math.floor(Math.random() * 4);
+    let nodeWallDirs = directions.filter((dir, index) => {
+      return index !== remainWall;
     });
+
+    for (const dir of nodeWallDirs) {
+      if (dir > -2 && dir < 2) {
+        pathWays.push(
+          nodes[0] +
+            (Math.floor(Math.random() * 2) *
+              (Math.floor(colsCount / 2) - 1) *
+              dir +
+              dir)
+        );
+      } else {
+        pathWays.push(
+          nodes[0] +
+            (Math.floor(Math.random() * 2) *
+              (Math.floor(rowsCount / 2) - 1) *
+              dir +
+              dir)
+        );
+      }
+    }
+
+    for (let i = 1; i < 5; i++) {
+      let remainWall = Math.floor(Math.random() * 4);
+      let nodeWallDirs = directions.filter((dir, index) => {
+        return index !== remainWall;
+      });
+
+      for (const dir of nodeWallDirs) {
+        pathWays.push(nodes[i] + dir);
+      }
+    }
 
     return { walls: walls, pathWays: pathWays };
   }

@@ -18,7 +18,8 @@ export default class Gameboard {
   #mouseOverTile = null;
   #draggingNode = null;
   #state;
-  // #pathFound = false;
+  #path1 = [];
+  #path2 = [];
 
   constructor(height, width, rowsCount, colsCount) {
     this.#height = height;
@@ -27,6 +28,8 @@ export default class Gameboard {
     this.#colsCount = colsCount;
 
     this.#gameboardDOM = document.querySelector(".gameboard");
+    this.#gameboardDOM.style.gridTemplateColumns = `
+      repeat( ${this.#colsCount}, 1fr)`;
 
     for (let row = 0; row < this.#rowsCount; row++) {
       for (let col = 0; col < this.#colsCount; col++) {
@@ -41,14 +44,13 @@ export default class Gameboard {
         return `${tile.tileHTML}`;
       })
       .join("");
+    for (const tile of this.#allTiles) {
+      tile.grabTileDOM();
+    }
   }
 
   set targetControls(targetControls) {
     this.#targetControls = targetControls;
-  }
-
-  get working() {
-    return this.#working;
   }
 
   updateTiles(idsArray, color) {
@@ -65,28 +67,86 @@ export default class Gameboard {
     this.#wallTiles = [];
     this.#pathNodes = [];
 
-    this.#pathFound = false;
+    // this.#pathFound = false;
   }
 
   pathfinder(speed) {
     const pathfinderData = {
-      colsCount: this.#colsCount,
+      colsCount: parseInt(this.#colsCount),
       allTiles: this.#allTiles.map((tile) => {
         return tile.id;
       }),
       wallTiles: this.#wallTiles.map((tile) => {
-        return tile.id;
+        return parseInt(tile);
       }),
     };
 
-    const pathfinderResult1 = Pathfinder(
+    const pathfinderResult1 = Pathfinder.findPath(
       pathfinderData,
-      this.#pathNodes.slice(0, 2)
+      this.#pathNodes.slice(0, 2).map((node) => {
+        return parseInt(node);
+      })
     );
 
-    const pathfinderResult2 = this.#pathNodes[2]
-      ? Pathfinder(pathfinderData, this.#pathNodes.slice(1, 3))
-      : null;
+    const pathfinderResult2 = Pathfinder.findPath(
+      pathfinderData,
+      this.#pathNodes.slice(1, 3).map((node) => {
+        return parseInt(node);
+      })
+    );
+
+    const recolorStepsSlow = (pathfinderResult, number) => {
+      pathfinderResult.stepsStack.shift().forEach((id) => {
+        if (this.#pathNodes.indexOf(id.toString()) < 0) {
+          this.#allTiles[id].recolor(`visited-${number}`);
+        }
+      });
+    };
+
+    const recolorPathSlow = (pathfinderResult, number) => {
+      if (this.#pathNodes.includes(pathfinderResult.path[0].toString())) {
+        pathfinderResult.path.shift();
+        return;
+      }
+      this.#allTiles[pathfinderResult.path.shift()].recolor(`path-${number}`);
+    };
+
+    const displayInstant = () => {
+      this.#allTiles.forEach((tile) => {
+        if (
+          !this.#wallTiles.includes(tile.id.toString()) &&
+          !this.#pathNodes.includes(tile.id.toString())
+        ) {
+          tile.recolor("empty");
+        }
+      });
+
+      if (pathfinderResult1.path[0] === "noPath") {
+        // Nějaké modal upozorneni
+        console.log("no path");
+      }
+      {
+        pathfinderResult1.path.forEach((tile) => {
+          this.#allTiles[tile].recolor("path-1");
+        });
+        this.#pathNodes.forEach((t) => {
+          this.#allTiles[t].recolor("node");
+        });
+      }
+
+      if (pathfinderResult2.path[0] === "noPath") {
+        // Nějaké modal upozorneni
+        console.log("no path");
+      }
+      {
+        pathfinderResult2.path.forEach((tile) => {
+          this.#allTiles[tile].recolor("path-2");
+        });
+        this.#pathNodes.forEach((t) => {
+          this.#allTiles[t].recolor("node");
+        });
+      }
+    };
 
     switch (speed) {
       case "instant":
@@ -95,15 +155,13 @@ export default class Gameboard {
         break;
 
       case "slow":
-        this.#working = true;
-
         const displayInterval = setInterval(() => {
-          if (pathfinderResult1.stepsStack.length > 0) {
+          if (pathfinderResult1.stepsStack.length > 1) {
             recolorStepsSlow(pathfinderResult1, 1);
             return;
           }
 
-          if (this.#pathNodes[2] && pathfinderResult2.stepsStack.length > 0) {
+          if (pathfinderResult2.stepsStack.length > 1) {
             recolorStepsSlow(pathfinderResult2, 2);
 
             return;
@@ -119,46 +177,17 @@ export default class Gameboard {
             return;
           }
           clearInterval(displayInterval);
-          this.#pathFound = true;
+          // this.#pathFound = true;
 
           this.#state = "pathFound";
           this.#targetControls.working = "ready";
           this.#targetControls.working = this.#state;
-        }, 200);
+        }, 50);
         break;
     }
 
-    const displayInstant = () => {
-      pathfinderResult1.path[0] === "noPath"
-        ? // Nějaké modal upozorneni
-          console.log("no path")
-        : pathfinderResult1.path.forEach((tile) => {
-            this.#allTiles[tile].recolor("path-1");
-          });
-
-      if (!this.#pathNodes[2]) {
-        return;
-      }
-
-      pathfinderResult2.path[0] === "noPath"
-        ? // Nějaké modal upozorneni
-          console.log("no path")
-        : pathfinderResult2.path.forEach((tile) => {
-            this.#allTiles[tile].recolor("path-2");
-          });
-    };
-
-    const recolorStepsSlow = (pathfinderResult, number) => {
-      pathfinderResult.stepsStack.unshift().forEach((id) => {
-        this.#allTiles[id].recolor(`visited-${number}`);
-      });
-    };
-
-    const recolorPathSlow = (pathfinderResult, number) => {
-      pathfinderResult.path.unshift().forEach((id) => {
-        this.#allTiles[id].recolor(`path-${number}`);
-      });
-    };
+    this.#path1 = pathfinderResult1.path;
+    this.#path2 = pathfinderResult2.path;
   }
 
   mouseEvent(id, event, mouseIsDown) {
@@ -167,13 +196,6 @@ export default class Gameboard {
         if (this.#wallTiles.includes(id)) {
           break;
         }
-
-        // if (this.#pathNodes.includes(id)){
-        //   this.#draggingNode=this.#pathNodes.indexOf(id)
-        //   this.#mouseOverTile=id
-
-        //   break
-        // }
 
         if (
           this.#pathNodes.includes(id) &&
@@ -185,45 +207,18 @@ export default class Gameboard {
           break;
         }
 
-        if (this.#state === "placingWall") {
+        if (
+          this.#state === "placingWall" &&
+          !this.#wallTiles.includes(id) &&
+          !this.#pathNodes.includes(id)
+        ) {
           this.#allTiles[id].recolor("wall");
           this.#wallTiles.push(id);
 
+          this.#mouseOverTile = null;
+
           break;
         }
-
-      // if (!buttonActive && !this.#pathNodes.includes(id)) {
-      //   break;
-      // }
-      // if (!buttonActive && this.#pathNodes.includes(id)) {
-      //   this.#dragging = this.#pathNodes.indexOf(id);
-      //   this.#targetControls.buttonClicked(this.#pathNodes.indexOf(id));
-      // }
-
-      // if (
-      //   buttonActive &&
-      //   (this.#wallTiles.includes(id) || this.#pathNodes.includes(id))
-      // ) {
-      //   break;
-      // }
-
-      // switch (buttonActive) {
-      //   case 0:
-      //     this.#pathNodes[0] = id;
-      //     break;
-      //   case 1:
-      //     this.#pathNodes[1] = id;
-      //     break;
-      //   case 2:
-      //     this.#pathNodes[2] = id;
-      //     break;
-      //   case 3:
-      //     this.#wallTiles.push(id);
-      //     this.#allTiles[id].recolor("wall");
-      //     break;
-      // }
-
-      // break;
 
       case "mouseup":
         if (mouseIsDown) {
@@ -233,7 +228,11 @@ export default class Gameboard {
 
             break;
           }
-          if (this.#state === "placingNodes") {
+          if (
+            this.#state === "placingNodes" &&
+            this.#mouseOverTile &&
+            !this.#pathNodes.includes(this.#mouseOverTile)
+          ) {
             this.#pathNodes.push(this.#mouseOverTile);
             this.#mouseOverTile = null;
             if (this.#pathNodes.length === 3) {
@@ -247,149 +246,44 @@ export default class Gameboard {
 
       case "mouseover":
         if (
-          !this.#state === "placingWall" ||
-          !this.#state === "placingNode" ||
-          !this.#draggingNode ||
-          this.#wallTiles.includes(id) ||
-          this.#pathNodes.includes(id)
+          this.#state === "placingWall" &&
+          !this.#wallTiles.includes(id) &&
+          !this.#pathNodes.includes(id)
         ) {
-          break;
-        }
-
-        if (this.#state === "placingWall") {
           this.#allTiles[id].recolor("wall");
 
-          !mouseIsDown
-            ? (this.#allTiles[this.#mouseOverTile].recolor("empty"),
-              (this.#mouseOverTile = id))
-            : this.#wallTiles.push(id);
+          if (mouseIsDown) {
+            this.#wallTiles.push(id);
+            this.#mouseOverTile = null;
+
+            break;
+          }
+          if (this.#mouseOverTile) {
+            this.#allTiles[this.#mouseOverTile].recolor("empty");
+          }
+          this.#mouseOverTile = id;
+
           break;
         }
 
-        if (this.#state === "placingNode" || this.#draggingNode) {
+        if (
+          (this.#state === "placingNodes" || this.#draggingNode) &&
+          !this.#wallTiles.includes(id) &&
+          !this.#pathNodes.includes(id)
+        ) {
           this.#allTiles[id].recolor("node");
 
-          this.#allTiles[this.#mouseOverTile].recolor("empty");
+          if (this.#mouseOverTile) {
+            this.#allTiles[this.#mouseOverTile].recolor("empty");
+          }
           this.#mouseOverTile = id;
           if (this.#draggingNode && mouseIsDown) {
             this.#pathNodes[this.#draggingNode] = id;
+            this.pathfinder("instant");
           }
         }
         break;
-
-      //   if (!mouseIsDown) {
-      //     break;
-      //   }
-      //   if (buttonActive === 0) {
-      //     this.#allTiles[this.#pathNodes[0]].recolor("start");
-
-      //     this.#dragging = null;
-      //     break;
-      //   }
-
-      //   if (buttonActive === 1) {
-      //     this.#allTiles[this.#pathNodes[1]].recolor(`end-1`);
-
-      //     this.#dragging = null;
-      //     break;
-      //   }
-
-      //   if (buttonActive === 2) {
-      //     this.#allTiles[this.#pathNodes[1]].recolor(`end-2`);
-
-      //     this.#dragging = null;
-      //     break;
-      //   }
-
-      // case "mouseover":
-      //   if (this.#wallTiles.includes(id) || this.#pathNodes.includes(id)) {
-      //     break;
-      //   }
-
-      //   this.#allTiles[this.#mouseOverTile].recolor("empty");
-      //   this.#mouseOverTile = id;
-
-      //   if (this.#state === "placingNodes"||this.#draggingNode) {
-      //     this.#allTiles[this.#mouseOverTile].recolor("node");
-      //     break;
-      //   }
-      //   if (this.#state === "placingWall") {
-      //     this.#allTiles[this.#mouseOverTile].recolor("wall");
-      //     break;
-      //   }
-
-      // this.#mouseOverTile = id;
-      // if (!buttonActive) {
-      //   break;
-      // }
-
-      // switch (buttonActive) {
-      //   case 0:
-      //     if (this.#wallTiles.includes(id) || this.#pathNodes.includes(id)) {
-      //       break;
-      //     }
-
-      //     this.#allTiles[id].recolor("start");
-      //     this.#pathNodes[buttonActive].recolor("empty");
-      //     this.#pathNodes[buttonActive] = id;
-
-      //     if (mouseIsDown && this.#pathNodes.length > 1 && this.#pathFound) {
-      //       this.pathfinder("instant");
-      //     }
-
-      //     break;
-
-      //   case 1:
-      //     if (this.#wallTiles.includes(id) || this.#pathNodes.includes(id)) {
-      //       break;
-      //     }
-
-      //     this.#allTiles[id].recolor(`end-${buttonActive}`);
-      //     this.#pathNodes[buttonActive].recolor("empty");
-      //     this.#pathNodes[buttonActive] = id;
-
-      //     if (mouseIsDown && this.#pathNodes.length > 1 && this.#pathFound) {
-      //       this.pathfinder("instant");
-      //     }
-
-      //     break;
-
-      //   case 2:
-      //     if (this.#wallTiles.includes(id) || this.#pathNodes.includes(id)) {
-      //       break;
-      //     }
-
-      //     this.#allTiles[id].recolor(`end-${buttonActive}`);
-      //     this.#pathNodes[buttonActive].recolor("empty");
-      //     this.#pathNodes[buttonActive] = id;
-
-      //     if (mouseIsDown && this.#pathNodes.length > 1 && this.#pathFound) {
-      //       this.pathfinder("instant");
-      //     }
-
-      //     break;
-
-      //   case 3:
-      //     if (this.#wallTiles.includes(id) || this.#pathNodes.includes(id)) {
-      //       break;
-      //     }
-
-      //     if (this.#mouseOverTile) {
-      //       this.#allTiles[this.#mouseOverTile].recolor("empty");
-      //       this.#allTiles[id].recolor(`wall`);
-      //     }
-
-      //     if (mouseIsDown && !this.#pathFound) {
-      //       this.#wallTiles.push(id);
-      //       this.#allTiles[id].recolor(`wall`);
-      //     }
-
-      //     break;
-      // }
-
-      // break;
     }
-    // this.#mouseOverTile = id;
   }
 
   generateMaze() {
@@ -400,6 +294,15 @@ export default class Gameboard {
       (wall) => !mazeResult.pathWays.includes(wall)
     );
 
+    this.#wallTiles = mazeResult.walls.reduce((acc, wall) => {
+      if (!mazeResult.pathWays.includes(wall)) {
+        acc.push(wall.toString());
+      }
+      return acc;
+    }, []);
+
+    
+
     const displayInterval = setInterval(() => {
       if (mazeResult.walls.length > 0) {
         this.#allTiles[mazeResult.walls.pop()].recolor("wall");
@@ -408,21 +311,28 @@ export default class Gameboard {
 
       if (mazeResult.pathWays.length > 0) {
         this.#allTiles[mazeResult.pathWays.pop()].recolor("empty");
+
         return;
       }
 
       clearInterval(displayInterval);
       this.#state = "ready";
       this.#targetControls.working = this.#state;
-    }, 200);
+    }, 50);
   }
 
   buttonClicked(id) {
-    this.#allTiles[this.#mouseOverTile].recolor("empty");
+    if (
+      this.#mouseOverTile &&
+      !this.#wallTiles.includes(this.#mouseOverTile) &&
+      !this.#pathNodes.includes(this.#mouseOverTile)
+    ) {
+      this.#allTiles[this.#mouseOverTile].recolor("empty");
+    }
     this.#mouseOverTile = null;
 
     switch (id) {
-      case 0:
+      case "0":
         if (this.#pathNodes.length === 0) {
           this.#state = "placingNodes";
           this.#targetControls.working = "ready";
@@ -432,27 +342,35 @@ export default class Gameboard {
         }
 
         this.#pathNodes.forEach((node) => {
-          node.recolor("empty");
+          this.#allTiles[node].recolor("empty");
         });
+        this.#pathNodes = [];
         this.#state = "ready";
         this.#targetControls.working = "ready";
         break;
 
-      case 1:
+      case "1":
+        if (this.#state === "placingWall") {
+          this.#state = "ready";
+          this.#targetControls.working = "ready";
+
+          break;
+        }
+
         this.#state = "placingWall";
         this.#targetControls.working = "ready";
         this.#targetControls.working = this.#state;
 
         break;
 
-      case 2:
+      case "2":
         this.#state = "maze";
         this.#targetControls.working = "ready";
         this.#targetControls.working = this.#state;
         this.generateMaze();
         break;
 
-      case 3:
+      case "3":
         this.#pathNodes.length < 3
           ? this.#targetControls.flashBtn(0)
           : ((this.#state = "findingPath"),
@@ -462,7 +380,7 @@ export default class Gameboard {
 
         break;
 
-      case 4:
+      case "4":
         this.resetBoard();
         this.#state = "ready";
         this.#targetControls.working = this.#state;
@@ -475,7 +393,8 @@ export default class Gameboard {
     if (this.#wallTiles.includes(id) || this.#pathNodes.includes(id)) {
       return;
     }
-    switch (state) {
+
+    switch (this.#state) {
       case "placingNodes":
         this.#allTiles[id].recolor("node");
         this.#pathNodes.push(id);
@@ -483,10 +402,14 @@ export default class Gameboard {
           this.#state = "ready";
           this.#targetControls.working = this.#state;
         }
+
         break;
       case "placingWall":
-        this.#allTiles[id].recolor("wall");
         this.#wallTiles.push(id);
+        this.#allTiles[id].recolor("wall");
+
+        this.#mouseOverTile = null;
+
         break;
     }
   }

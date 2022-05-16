@@ -1,10 +1,11 @@
-import Gameboard from "./Gameboard";
+import Gameboard from "./Gameboard.js";
 
 export default class Controls {
   #targetGameboard;
 
   #gameboardDOM;
   #buttonsDOM;
+  #displayDOM;
 
   #buttons = ["Nodes", "Wall", "Maze", "Start", "Reset"];
   #buttonActive = null;
@@ -15,10 +16,11 @@ export default class Controls {
   constructor() {
     document.querySelector(".controls").innerHTML = this.#buttons
       .map((button, index) => {
-        return `<div class="button button__${button}" data-btn="${index}">
-                    <div class="button__icon"></div>
-                    <div class="button__label">${button}</div>
-                </div>`;
+        return `
+        <div class="button button__${button}" data-btn="${index}">
+            <div class="button__icon" data-btn="${index}"></div>
+            <div class="button__label" data-btn="${index}">${button}</div>
+        </div>`;
       })
       .join("");
 
@@ -99,34 +101,41 @@ export default class Controls {
       }
     });
     this.#gameboardDOM.addEventListener("mouseover", (e) => {
+      this.#targetGameboard.mouseEvent(
+        e.target.dataset.id,
+        "mouseover",
+        this.#mouseIsDown
+      );
 
-      this.#targetGameboard.mouseEvent(e.target.dataset.id, 'mouseover', this.#mouseIsDown)
-
-  
       // signalToGameboard(e.target.dataset.id, "mouseover");
     });
 
-
     this.#gameboardDOM.addEventListener("mousedown", (e) => {
-e.preventDefault()
+      e.preventDefault();
 
       this.#mouseIsDown = true;
-      this.#targetGameboard.mouseEvent(e.target.dataset.id, 'mousedown', this.#mouseIsDown)
+      this.#targetGameboard.mouseEvent(
+        e.target.dataset.id,
+        "mousedown",
+        this.#mouseIsDown
+      );
 
       // signalToGameboard(e.target.dataset.id, "mousedown", this.#buttonActive);
     });
     window.addEventListener("mouseup", (e) => {
-      if (e.target.dataset.id&&this.#mouseIsDown) {
-        this.#targetGameboard.mouseEvent(e.target.dataset.id, 'mouseup', this.#mouseIsDown)
-
+      if (e.target.dataset.id && this.#mouseIsDown) {
+        this.#targetGameboard.mouseEvent(
+          e.target.dataset.id,
+          "mouseup",
+          this.#mouseIsDown
+        );
 
         // signalToGameboard(e.target.dataset.id, "mouseup");
       }
-      this.#targetGameboard.mouseEvent('outside', 'mouseup', this.#mouseIsDown)
+      this.#targetGameboard.mouseEvent("outside", "mouseup", this.#mouseIsDown);
 
       this.#mouseIsDown = false;
     });
-    
 
     // this.#gameboardDOM.addEventListener("touchstart", (e) => {
     //   e.preventDefault();
@@ -153,32 +162,32 @@ e.preventDefault()
   //       break;
   //   }
 
-    // if (this.#targetGameboard.working) {
-    //   return;
-    // }
-    // switch (targetId) {
+  // if (this.#targetGameboard.working) {
+  //   return;
+  // }
+  // switch (targetId) {
 
-    //   case 0:
+  //   case 0:
 
-    //     break;
-    //   case 2:
-    //     this.#targetGameboard.generateMaze();
-    //     break;
-    //   case 3:
-    //     this.#targetGameboard.pathfinder("slow");
-    //     this.switchActivBtn(null);
-    //     this.changeCursor();
-    //     break;
-    //   case 4:
-    //     this.#targetGameboard.resetBoard();
-    //     this.switchActivBtn(null);
-    //     this.changeCursor();
-    //     break;
-    //   default:
-    //     this.switchActivBtn(targetId);
-    //     this.changeCursor();
-    //     break;
-    // }
+  //     break;
+  //   case 2:
+  //     this.#targetGameboard.generateMaze();
+  //     break;
+  //   case 3:
+  //     this.#targetGameboard.pathfinder("slow");
+  //     this.switchActivBtn(null);
+  //     this.changeCursor();
+  //     break;
+  //   case 4:
+  //     this.#targetGameboard.resetBoard();
+  //     this.switchActivBtn(null);
+  //     this.changeCursor();
+  //     break;
+  //   default:
+  //     this.switchActivBtn(targetId);
+  //     this.changeCursor();
+  //     break;
+  // }
   // }
 
   flashBtn(id) {
@@ -199,7 +208,7 @@ e.preventDefault()
   }
 
   changeCursor(cursor) {
-    document.querySelector("main").className = `cursor-${cursor}`;
+    document.querySelector("section").className = `cursor-${cursor}`;
   }
 
   signalToGameboard(target, event) {
