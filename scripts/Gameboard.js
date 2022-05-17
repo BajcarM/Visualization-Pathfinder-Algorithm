@@ -301,8 +301,6 @@ export default class Gameboard {
       return acc;
     }, []);
 
-    
-
     const displayInterval = setInterval(() => {
       if (mazeResult.walls.length > 0) {
         this.#allTiles[mazeResult.walls.pop()].recolor("wall");
@@ -372,7 +370,7 @@ export default class Gameboard {
 
       case "3":
         this.#pathNodes.length < 3
-          ? this.#targetControls.flashBtn(0)
+          ? (this.#targetControls.flashBtn(0, 4))
           : ((this.#state = "findingPath"),
             (this.#targetControls.working = "ready"),
             (this.#targetControls.working = this.#state),

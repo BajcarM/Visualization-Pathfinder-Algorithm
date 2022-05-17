@@ -23,8 +23,20 @@
   font-size: 1.5rem;
   height: 100px;
   width: 80px;
-  background-color: white;
+  background-color: rgb(222, 222, 222);
   border: 1px outset rgb(117, 117, 117);
+}
+.controls .button.active {
+  background-color: rgb(255, 232, 86);
+}
+.controls .button.disabled {
+  background-color: rgb(112, 112, 112);
+}
+.controls .button.highlight {
+  background-color: red;
+}
+.controls .button:hover {
+  box-shadow: 0px 0px 10px yellow;
 }
 
 .gameboard {

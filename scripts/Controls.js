@@ -190,11 +190,18 @@ export default class Controls {
   // }
   // }
 
-  flashBtn(id) {
-    this.#buttonsDOM[id].classList.add("highlight");
-    setTimeout(() => {
-      this.#buttonsDOM[id].classList.remove("highlight");
-    }, 500);
+  flashBtn(id, times) {
+    let i = 0;
+    this.#buttonsDOM[id].classList.toggle("highlight");
+    const flash = setInterval(() => {
+      this.#buttonsDOM[id].classList.toggle("highlight");
+
+      i++;
+
+      if (i === times - 1) {
+        clearInterval(flash);
+      }
+    }, 200);
   }
 
   switchActivBtn(targetId) {
