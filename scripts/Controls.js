@@ -39,9 +39,9 @@ export default class Controls {
           button.classList.remove("active");
           button.classList.remove("disabled");
 
-          this.#displayDOM.innerHTML=`
+          this.#displayDOM.innerHTML = `
         <p>Let's start by placing <b>Nodes</b>...</p> 
-        <p>Or <b>Walls</b>... Or build a whole <b>Maze</b> !!</p>`
+        <p>Or <b>Walls</b>... Or build a whole <b>Maze</b> !!</p>`;
         });
 
         break;
@@ -51,17 +51,17 @@ export default class Controls {
         this.#buttonsDOM[1].classList.add("disabled");
         this.#buttonsDOM[2].classList.add("disabled");
         this.#buttonsDOM[3].classList.add("disabled");
-        this.#displayDOM.innerHTML=`
+        this.#displayDOM.innerHTML = `
         <p>Place 3 Nodes.</p> 
-        <p>One Start, one Stop and one End.</p>`
+        <p>One Start, one Stop and one End.</p>`;
         break;
 
       case "placingWall":
         this.changeCursor("wall");
         this.#buttonsDOM[1].classList.add("active");
-        this.#displayDOM.innerHTML=`
+        this.#displayDOM.innerHTML = `
         <p>Place Walls on empty tiles.</p> 
-        <p>You can click and move to draw them ;-)</p>`
+        <p>You can click and move to draw them ;-)</p>`;
         break;
 
       case "maze":
@@ -70,8 +70,8 @@ export default class Controls {
           button.classList.add("disabled");
         });
         this.#buttonsDOM[2].classList.add("active");
-        this.#displayDOM.innerHTML=`
-        <p>Building a new Maze...</p>`
+        this.#displayDOM.innerHTML = `
+        <p>Building a new Maze...</p>`;
         break;
       case "findingPath":
         this.changeCursor("loading");
@@ -79,9 +79,9 @@ export default class Controls {
           button.classList.add("disabled");
         });
         this.#buttonsDOM[3].classList.add("active");
-        this.#displayDOM.innerHTML=`
+        this.#displayDOM.innerHTML = `
         <p>Finding paths...</p> 
-        <p>If there is one - I will find it !</p>`
+        <p>If there is one - I will find it !</p>`;
         break;
       case "pathFound":
         this.changeCursor("initial");
@@ -89,9 +89,9 @@ export default class Controls {
           button.classList.add("disabled");
         });
         this.#buttonsDOM[4].classList.remove("disabled");
-        this.#displayDOM.innerHTML=`
+        this.#displayDOM.innerHTML = `
         <p>Drag end <b>Nodes</b> to see the paths change.</p> 
-        <p>If there is no path - there <b>IS</b> no path :-P</p>`
+        <p>If there is no path - there is <b>NO</b> path :-P</p>`;
         break;
     }
   }

@@ -34,7 +34,7 @@
       box-shadow: 0px 0px 20px red;
     }
 
-    &:hover {
+    &:not(.disabled):hover {
         
       
       box-shadow: 2px 2px 5px grey;
@@ -74,7 +74,7 @@
 
 
         & .button__icon{
-        background-image: url(../images/workers.png);
+        background-image: url(../images/maze.png);
   
     }
     }

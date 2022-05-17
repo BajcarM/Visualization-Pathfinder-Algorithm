@@ -70,19 +70,19 @@ export default class Pathfinder {
       while (stepsStack.length > 0) {
         const currentStep = stack.pop();
 
-        let up = currentStep.indexOf(path[path.length - 1] - colsCount);
-        let down = currentStep.indexOf(path[path.length - 1] + colsCount);
-        let right = currentStep.indexOf(path[path.length - 1] + 1);
-        let left = currentStep.indexOf(path[path.length - 1] - 1);
+        let up = currentStep.indexOf(path[0] - colsCount);
+        let down = currentStep.indexOf(path[0] + colsCount);
+        let right = currentStep.indexOf(path[0] + 1);
+        let left = currentStep.indexOf(path[0] - 1);
 
         if (up >= 0) {
-          path.push(currentStep[up]);
+          path.unshift(currentStep[up]);
         } else if (down >= 0) {
-          path.push(currentStep[down]);
+          path.unshift(currentStep[down]);
         } else if (right >= 0) {
-          path.push(currentStep[right]);
+          path.unshift(currentStep[right]);
         } else if (left >= 0) {
-          path.push(currentStep[left]);
+          path.unshift(currentStep[left]);
         }
       }
 
