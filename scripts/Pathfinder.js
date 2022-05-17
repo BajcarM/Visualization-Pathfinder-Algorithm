@@ -53,8 +53,6 @@ export default class Pathfinder {
 
       if (nextStep.length > 0) {
         stepsStack.push(nextStep);
-      } else {
-        stepsStack = ["noPath"];
       }
     }
 
@@ -64,10 +62,6 @@ export default class Pathfinder {
 
     const pathBack = (arg) => {
       let stack = arg;
-
-      if (stack === ["noPath"]) {
-        return "noPath";
-      }
 
       stack.pop();
 
@@ -95,7 +89,13 @@ export default class Pathfinder {
       return path;
     };
 
-    let path = pathBack(stepsStack);
+    let path;
+
+    if (buffer === ["noPath"]) {
+      path = "noPath";
+    } else {
+      path = pathBack(stepsStack);
+    }
 
     return {
       stepsStack: buffer,

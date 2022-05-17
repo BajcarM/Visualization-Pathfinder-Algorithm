@@ -95,6 +95,10 @@ export default class Gameboard {
       })
     );
 
+    console.log(pathfinderResult1.path);
+    console.log(pathfinderResult1.stepsStack);
+    console.log(pathfinderResult2.path);
+
     const recolorStepsSlow = (pathfinderResult, number) => {
       pathfinderResult.stepsStack.shift().forEach((id) => {
         if (this.#pathNodes.indexOf(id.toString()) < 0) {
@@ -121,7 +125,7 @@ export default class Gameboard {
         }
       });
 
-      if (pathfinderResult1.path[0] === "noPath") {
+      if (pathfinderResult1.path === "noPath") {
         // Nějaké modal upozorneni
         console.log("no path");
       }
@@ -134,7 +138,7 @@ export default class Gameboard {
         });
       }
 
-      if (pathfinderResult2.path[0] === "noPath") {
+      if (pathfinderResult2.path === "noPath") {
         // Nějaké modal upozorneni
         console.log("no path");
       }

@@ -26,6 +26,7 @@ export default class Controls {
 
     this.#gameboardDOM = document.querySelector(".gameboard");
     this.#buttonsDOM = document.querySelectorAll(".button");
+    this.#displayDOM = document.querySelector(".display");
 
     this.addListeners();
   }
@@ -37,6 +38,10 @@ export default class Controls {
         this.#buttonsDOM.forEach((button) => {
           button.classList.remove("active");
           button.classList.remove("disabled");
+
+          this.#displayDOM.innerHTML=`
+        <p>Let's start by placing nodes...</p> 
+        <p>Or walls... Or build a whole maze !!</p>`
         });
 
         break;
@@ -46,12 +51,17 @@ export default class Controls {
         this.#buttonsDOM[1].classList.add("disabled");
         this.#buttonsDOM[2].classList.add("disabled");
         this.#buttonsDOM[3].classList.add("disabled");
+        this.#displayDOM.innerHTML=`
+        <p>Place 3 nodes.</p> 
+        <p>One start, one stop, one end.</p>`
         break;
 
       case "placingWall":
         this.changeCursor("wall");
         this.#buttonsDOM[1].classList.add("active");
-
+        this.#displayDOM.innerHTML=`
+        <p>Place walls on empty tiles.</p> 
+        <p>You can click and move to draw them ;-)</p>`
         break;
 
       case "maze":
@@ -60,7 +70,8 @@ export default class Controls {
           button.classList.add("disabled");
         });
         this.#buttonsDOM[2].classList.add("active");
-
+        this.#displayDOM.innerHTML=`
+        <p>Building a new maze...</p>`
         break;
       case "findingPath":
         this.changeCursor("loading");
@@ -68,7 +79,9 @@ export default class Controls {
           button.classList.add("disabled");
         });
         this.#buttonsDOM[3].classList.add("active");
-
+        this.#displayDOM.innerHTML=`
+        <p>Finding paths...</p> 
+        <p>If there is one - I will find it !</p>`
         break;
       case "pathFound":
         this.changeCursor("initial");
@@ -76,6 +89,9 @@ export default class Controls {
           button.classList.add("disabled");
         });
         this.#buttonsDOM[4].classList.remove("disabled");
+        this.#displayDOM.innerHTML=`
+        <p>Drag end nodes to see the paths change.</p> 
+        <p>If there is no path - there is no path :-P</p>`
         break;
     }
   }
@@ -90,9 +106,7 @@ export default class Controls {
         if (!e.target.classList.contains("disabled")) {
           this.#targetGameboard.buttonClicked(e.target.dataset.btn);
         }
-        // this.buttonClicked(e.target);
       });
-      // button.addEventListener("touchstart", this.buttonClicked(e));
     });
 
     this.#gameboardDOM.addEventListener("click", (e) => {
@@ -106,8 +120,6 @@ export default class Controls {
         "mouseover",
         this.#mouseIsDown
       );
-
-      // signalToGameboard(e.target.dataset.id, "mouseover");
     });
 
     this.#gameboardDOM.addEventListener("mousedown", (e) => {
@@ -119,8 +131,6 @@ export default class Controls {
         "mousedown",
         this.#mouseIsDown
       );
-
-      // signalToGameboard(e.target.dataset.id, "mousedown", this.#buttonActive);
     });
     window.addEventListener("mouseup", (e) => {
       if (e.target.dataset.id && this.#mouseIsDown) {
@@ -129,66 +139,12 @@ export default class Controls {
           "mouseup",
           this.#mouseIsDown
         );
-
-        // signalToGameboard(e.target.dataset.id, "mouseup");
       }
       this.#targetGameboard.mouseEvent("outside", "mouseup", this.#mouseIsDown);
 
       this.#mouseIsDown = false;
     });
-
-    // this.#gameboardDOM.addEventListener("touchstart", (e) => {
-    //   e.preventDefault();
-    //   this.#mouseIsDown = true;
-    //   signalToGameboard(e.target.dataset.id, "mousedown");
-    // });
-    // window.addEventListener("touchend", (e) => {
-    //   e.preventDefault();
-    //   this.#mouseIsDown = false;
-    //   if (e.target.dataset.id) {
-    //     signalToGameboard(e.target.dataset.id, "mouseup");
-    //   }
-    // });
   }
-
-  // buttonClicked(target) {
-  //   if (!target.classList.contains("available")) {
-  //     return;
-  //   }
-
-  //   switch (target.dataset.id) {
-  //     case 0:
-  //       this.#targetGameboard.buttonNodes();
-  //       break;
-  //   }
-
-  // if (this.#targetGameboard.working) {
-  //   return;
-  // }
-  // switch (targetId) {
-
-  //   case 0:
-
-  //     break;
-  //   case 2:
-  //     this.#targetGameboard.generateMaze();
-  //     break;
-  //   case 3:
-  //     this.#targetGameboard.pathfinder("slow");
-  //     this.switchActivBtn(null);
-  //     this.changeCursor();
-  //     break;
-  //   case 4:
-  //     this.#targetGameboard.resetBoard();
-  //     this.switchActivBtn(null);
-  //     this.changeCursor();
-  //     break;
-  //   default:
-  //     this.switchActivBtn(targetId);
-  //     this.changeCursor();
-  //     break;
-  // }
-  // }
 
   flashBtn(id, times) {
     let i = 0;
