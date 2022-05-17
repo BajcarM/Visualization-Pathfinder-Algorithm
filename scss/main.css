@@ -5,10 +5,45 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
+@-webkit-keyframes visited-1 {
+  0% {
+    background-color: rgb(0, 160, 8);
+  }
+  100% {
+    background-color: rgb(111, 255, 118);
+  }
+}
+
+@keyframes visited-1 {
+  0% {
+    background-color: rgb(0, 160, 8);
+  }
+  100% {
+    background-color: rgb(111, 255, 118);
+  }
+}
+@-webkit-keyframes visited-2 {
+  0% {
+    background-color: rgb(98, 141, 0);
+  }
+  100% {
+    background-color: rgb(208, 255, 98);
+  }
+}
+@keyframes visited-2 {
+  0% {
+    background-color: rgb(98, 141, 0);
+  }
+  100% {
+    background-color: rgb(208, 255, 98);
+  }
+}
 .display {
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
   min-height: 100px;
   width: 100%;
-  background-color: rgb(213, 213, 213);
 }
 
 .controls {
@@ -20,23 +55,49 @@
 .controls .button {
   display: grid;
   place-items: center;
+  gap: 0;
   font-size: 1.5rem;
   height: 100px;
   width: 80px;
-  background-color: rgb(222, 222, 222);
-  border: 1px outset rgb(117, 117, 117);
+  background-color: white;
 }
 .controls .button.active {
-  background-color: rgb(255, 232, 86);
+  background-color: yellow;
+  box-shadow: 0px 0px 20px rgb(202, 202, 202);
 }
 .controls .button.disabled {
   background-color: rgb(112, 112, 112);
 }
 .controls .button.highlight {
   background-color: red;
+  box-shadow: 0px 0px 20px red;
 }
 .controls .button:hover {
-  box-shadow: 0px 0px 10px yellow;
+  box-shadow: 2px 2px 5px grey;
+}
+.controls .button:active {
+  border: inset 2px grey;
+}
+.controls .button .button__icon {
+  background-size: cover;
+  background-position: center;
+  height: 50px;
+  width: 50px;
+}
+.controls .button__Nodes .button__icon {
+  background-image: url(../images/destination.png);
+}
+.controls .button__Wall .button__icon {
+  background-image: url(../images/wall-color.png);
+}
+.controls .button__Maze .button__icon {
+  background-image: url(../images/workers.png);
+}
+.controls .button__Start .button__icon {
+  background-image: url(../images/play-blue.png);
+}
+.controls .button__Reset .button__icon {
+  background-image: url(../images/roundabout-red.png);
 }
 
 .gameboard {
@@ -55,9 +116,8 @@ section {
   display: grid;
   place-items: center;
   grid-row: 1;
-  min-width: 600px;
-  max-width: 1000px;
-  box-shadow: 5px 5px 5px;
+  width: 100%;
+  box-shadow: 0 5px 5px rgba(128, 128, 128, 0.474);
   grid-template-rows: 1fr 1fr;
   gap: 1rem;
 }
@@ -76,21 +136,27 @@ section {
 .tile__node {
   background-size: cover;
   background-position: center;
-  background-color: aqua;
+  background-color: rgb(130, 255, 255);
+  background-image: url(../images/location.png);
 }
 .tile__wall {
   background-size: cover;
   background-position: center;
-  background-color: red;
+  background-color: rgb(47, 47, 47);
+  background-image: url(../images/wall-grey.png);
 }
 .tile__visited-1 {
   background-size: cover;
   background-position: center;
+  -webkit-animation: visited-1 0.4s ease;
+          animation: visited-1 0.4s ease;
   background-color: rgb(111, 255, 118);
 }
 .tile__visited-2 {
   background-size: cover;
   background-position: center;
+  -webkit-animation: visited-2 0.4s ease;
+          animation: visited-2 0.4s ease;
   background-color: rgb(208, 255, 98);
 }
 .tile__path-1 {

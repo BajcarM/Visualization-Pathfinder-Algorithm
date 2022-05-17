@@ -1,7 +1,9 @@
 .display {
+    @include grid-center;
+    font-size: 1.5rem;
   min-height: 100px;
   width: 100%;
-  background-color: rgb(213, 213, 213);
+  
 }
 
 .controls {
@@ -11,26 +13,88 @@
 
   .button {
     @include grid-center;
+    gap: 0;
     font-size: 1.5rem;
     height: 100px;
     width: 80px;
-    background-color: rgb(222, 222, 222);
-    border: 1px outset rgb(117, 117, 117);
+    background-color: white;
+    
 
     &.active {
-      background-color: rgb(255, 232, 86);
+      background-color: yellow;
+      box-shadow: 0px 0px 20px rgb(202, 202, 202);
     }
 
     &.disabled {
       background-color: rgb(112, 112, 112);
     }
 
-    &.highlight{
-        background-color: red;
+    &.highlight {
+      background-color: red;
+      box-shadow: 0px 0px 20px red;
     }
 
-    &:hover{
-        box-shadow: 0px 0px 10px yellow;
+    &:hover {
+        
+      
+      box-shadow: 2px 2px 5px grey;
+    }
+
+    &:active{
+        border: inset 2px grey
+    }
+
+    & .button__icon{
+        @include tile-background;
+
+        height: 50px;
+        width: 50px;
+    }
+
+    &__Nodes{
+
+
+        & .button__icon{
+        background-image: url(../images/destination.png);
+    
+    }
+    }
+
+    &__Wall{
+
+
+        & .button__icon{
+     
+        background-image: url(../images/wall-color.png);
+    
+    }
+    }
+
+    &__Maze{
+
+
+        & .button__icon{
+        background-image: url(../images/workers.png);
+  
+    }
+    }
+
+    &__Start{
+
+
+        & .button__icon{
+        background-image: url(../images/play-blue.png);
+    
+    }
+    }
+
+    &__Reset{
+
+
+        & .button__icon{
+        background-image: url(../images/roundabout-red.png);
+    
+    }
     }
   }
 }

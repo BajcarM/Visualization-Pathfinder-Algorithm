@@ -7,9 +7,9 @@ section {
 .controls-container {
   @include grid-center;
   grid-row: 1;
-  min-width: 600px;
-  max-width: 1000px;
-  box-shadow: 5px 5px 5px;
+  width: 100%;
+  
+  box-shadow: 0 5px 5px rgba(128, 128, 128, 0.474) ;
   grid-template-rows: 1fr 1fr;
   gap: 1rem;
 }

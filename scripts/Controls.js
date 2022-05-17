@@ -40,8 +40,8 @@ export default class Controls {
           button.classList.remove("disabled");
 
           this.#displayDOM.innerHTML=`
-        <p>Let's start by placing nodes...</p> 
-        <p>Or walls... Or build a whole maze !!</p>`
+        <p>Let's start by placing <b>Nodes</b>...</p> 
+        <p>Or <b>Walls</b>... Or build a whole <b>Maze</b> !!</p>`
         });
 
         break;
@@ -52,15 +52,15 @@ export default class Controls {
         this.#buttonsDOM[2].classList.add("disabled");
         this.#buttonsDOM[3].classList.add("disabled");
         this.#displayDOM.innerHTML=`
-        <p>Place 3 nodes.</p> 
-        <p>One start, one stop, one end.</p>`
+        <p>Place 3 Nodes.</p> 
+        <p>One Start, one Stop and one End.</p>`
         break;
 
       case "placingWall":
         this.changeCursor("wall");
         this.#buttonsDOM[1].classList.add("active");
         this.#displayDOM.innerHTML=`
-        <p>Place walls on empty tiles.</p> 
+        <p>Place Walls on empty tiles.</p> 
         <p>You can click and move to draw them ;-)</p>`
         break;
 
@@ -71,7 +71,7 @@ export default class Controls {
         });
         this.#buttonsDOM[2].classList.add("active");
         this.#displayDOM.innerHTML=`
-        <p>Building a new maze...</p>`
+        <p>Building a new Maze...</p>`
         break;
       case "findingPath":
         this.changeCursor("loading");
@@ -90,8 +90,8 @@ export default class Controls {
         });
         this.#buttonsDOM[4].classList.remove("disabled");
         this.#displayDOM.innerHTML=`
-        <p>Drag end nodes to see the paths change.</p> 
-        <p>If there is no path - there is no path :-P</p>`
+        <p>Drag end <b>Nodes</b> to see the paths change.</p> 
+        <p>If there is no path - there <b>IS</b> no path :-P</p>`
         break;
     }
   }

@@ -95,10 +95,6 @@ export default class Gameboard {
       })
     );
 
-    console.log(pathfinderResult1.path);
-    console.log(pathfinderResult1.stepsStack);
-    console.log(pathfinderResult2.path);
-
     const recolorStepsSlow = (pathfinderResult, number) => {
       pathfinderResult.stepsStack.shift().forEach((id) => {
         if (this.#pathNodes.indexOf(id.toString()) < 0) {
@@ -320,7 +316,7 @@ export default class Gameboard {
       clearInterval(displayInterval);
       this.#state = "ready";
       this.#targetControls.working = this.#state;
-    }, 50);
+    }, 30);
   }
 
   buttonClicked(id) {
@@ -374,7 +370,7 @@ export default class Gameboard {
 
       case "3":
         this.#pathNodes.length < 3
-          ? (this.#targetControls.flashBtn(0, 4))
+          ? this.#targetControls.flashBtn(0, 4)
           : ((this.#state = "findingPath"),
             (this.#targetControls.working = "ready"),
             (this.#targetControls.working = this.#state),

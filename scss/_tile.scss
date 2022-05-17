@@ -4,21 +4,25 @@
 
   &__node {
     @include tile-background;
-    background-color: aqua;
+    background-color: rgb(130, 255, 255);
+    background-image: url(../images/location.png);
   }
 
   &__wall {
     @include tile-background;
-    background-color: red;
+    background-color: rgb(47, 47, 47);
+    background-image: url(../images/wall-grey.png)
   }
 
   &__visited-1 {
-    @include tile-background;
+    @include tile-background; 
+     animation: visited-1 0.4s ease; 
     background-color: rgb(111, 255, 118);
   }
 
   &__visited-2 {
     @include tile-background;
+    animation: visited-2 0.4s ease; 
     background-color: rgb(208, 255, 98);
   }
 
