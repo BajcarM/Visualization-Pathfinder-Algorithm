@@ -14,7 +14,7 @@ export default class Pathfinder {
 
     let stepsStack = [[pathNodes[0]]];
 
-    let nextStep = [[pathNodes[0]]];
+    let nextStep = [pathNodes[0]];
 
     while (nextStep.length > 0 && nextStep.indexOf(pathNodes[1]) < 0) {
       let currentStep = nextStep;
@@ -22,21 +22,30 @@ export default class Pathfinder {
       let accumulator = [];
       for (let curTile of currentStep) {
         curTile = parseInt(curTile);
-        if (remainingTiles.includes(curTile + colsCount)) {
+        if (
+          curTile + colsCount < allTiles.length &&
+          remainingTiles.includes(curTile + colsCount)
+        ) {
           accumulator.push(curTile + colsCount);
-        }
-
-        if (remainingTiles.includes(curTile - colsCount)) {
-          accumulator.push(curTile - colsCount);
+          remainingTiles.splice(remainingTiles.indexOf(curTile + colsCount), 1);
         }
         if (
-          remainingTiles.includes(curTile + 1) &&
-          (curTile + 1) % colsCount > 0
+          curTile > colsCount &&
+          remainingTiles.includes(curTile - colsCount)
+        ) {
+          accumulator.push(curTile - colsCount);
+          remainingTiles.splice(remainingTiles.indexOf(curTile - colsCount), 1);
+        }
+        if (
+          (curTile + 1) % colsCount > 0 &&
+          remainingTiles.includes(curTile + 1)
         ) {
           accumulator.push(curTile + 1);
+          remainingTiles.splice(remainingTiles.indexOf(curTile + 1), 1);
         }
-        if (remainingTiles.includes(curTile - 1) && curTile % colsCount > 0) {
+        if (curTile % colsCount > 0 && remainingTiles.includes(curTile - 1)) {
           accumulator.push(curTile - 1);
+          remainingTiles.splice(remainingTiles.indexOf(curTile - 1), 1);
         }
       }
 
@@ -47,14 +56,6 @@ export default class Pathfinder {
       } else {
         stepsStack = ["noPath"];
       }
-
-      remainingTiles = remainingTiles.reduce((acc, tile) => {
-        if (nextStep.indexOf(tile) < 0) {
-          acc.push(tile);
-        }
-
-        return acc;
-      }, []);
     }
 
     const buffer = stepsStack.map((step) => {
