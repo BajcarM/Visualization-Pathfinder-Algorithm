@@ -26,7 +26,7 @@
     }
 
     &.disabled {
-      background-color: rgb(112, 112, 112);
+      background-color: $color-disabled;
     }
 
     &.highlight {
@@ -37,63 +37,44 @@
     &:not(.disabled):hover {
         
       
-      box-shadow: 2px 2px 5px grey;
+      box-shadow: 2px 2px 5px $color-visited-2;
     }
 
     &:active{
-        border: inset 2px grey
+        border: inset 2px $color-visited-2
     }
 
     & .button__icon{
         @include tile-background;
-
         height: 50px;
         width: 50px;
     }
 
     &__Nodes{
-
-
         & .button__icon{
-        background-image: url(../images/destination.png);
-    
+        background-image: url(../images/destination.png);    
     }
     }
-
     &__Wall{
-
-
-        & .button__icon{
-     
-        background-image: url(../images/wall-color.png);
-    
+        & .button__icon{     
+        background-image: url(../images/wall-color.png);    
     }
     }
-
     &__Maze{
-
-
         & .button__icon{
-        background-image: url(../images/maze.png);
-  
+        background-image: url(../images/maze.png);  
     }
     }
 
     &__Start{
-
-
         & .button__icon{
-        background-image: url(../images/play-blue.png);
-    
+        background-image: url(../images/play-blue.png);    
     }
     }
 
     &__Reset{
-
-
         & .button__icon{
-        background-image: url(../images/roundabout-red.png);
-    
+        background-image: url(../images/roundabout-red.png);    
     }
     }
   }

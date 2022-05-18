@@ -24,18 +24,18 @@
 }
 @-webkit-keyframes visited-2 {
   0% {
-    background-color: rgb(98, 141, 0);
+    background-color: rgb(177, 183, 0);
   }
   100% {
-    background-color: rgb(208, 255, 98);
+    background-color: rgb(250, 255, 98);
   }
 }
 @keyframes visited-2 {
   0% {
-    background-color: rgb(98, 141, 0);
+    background-color: rgb(177, 183, 0);
   }
   100% {
-    background-color: rgb(208, 255, 98);
+    background-color: rgb(250, 255, 98);
   }
 }
 .display {
@@ -73,10 +73,10 @@
   box-shadow: 0px 0px 20px red;
 }
 .controls .button:not(.disabled):hover {
-  box-shadow: 2px 2px 5px grey;
+  box-shadow: 2px 2px 5px rgb(250, 255, 98);
 }
 .controls .button:active {
-  border: inset 2px grey;
+  border: inset 2px rgb(250, 255, 98);
 }
 .controls .button .button__icon {
   background-size: cover;
@@ -131,7 +131,7 @@ section {
 }
 
 .tile {
-  border: 1px solid grey;
+  border: 1px solid rgb(221, 221, 221);
   background-color: #fff;
 }
 .tile__node {
@@ -139,12 +139,16 @@ section {
   background-position: center;
   background-color: rgb(130, 255, 255);
   border: 1px solid rgb(130, 255, 255);
+  border-radius: 50%;
   background-image: url(../images/locator-icon.png);
+  z-index: 5;
+  box-shadow: 0 0 5px 8px rgb(130, 255, 255);
 }
 .tile__wall {
   background-size: cover;
   background-position: center;
-  background-color: rgb(47, 47, 47);
+  background-color: rgb(112, 112, 112);
+  border-color: rgb(112, 112, 112);
   background-image: url(../images/wall-grey.png);
 }
 .tile__visited-1 {
@@ -159,7 +163,7 @@ section {
   background-position: center;
   -webkit-animation: visited-2 0.4s ease;
           animation: visited-2 0.4s ease;
-  background-color: rgb(208, 255, 98);
+  background-color: rgb(250, 255, 98);
 }
 .tile__path-1 {
   background-size: cover;

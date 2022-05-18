@@ -269,7 +269,8 @@ export default class Gameboard {
         if (
           (this.#state === "placingNodes" || this.#draggingNode) &&
           !this.#wallTiles.includes(id) &&
-          !this.#pathNodes.includes(id)
+          !this.#pathNodes.includes(id) &&
+          id
         ) {
           this.#allTiles[id].recolor("node");
 

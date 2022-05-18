@@ -90,7 +90,7 @@ export default class Controls {
         });
         this.#buttonsDOM[4].classList.remove("disabled");
         this.#displayDOM.innerHTML = `
-        <p>Drag end <b>Nodes</b> to see the paths change.</p> 
+        <p>Drag <b>End Nodes</b> to see the paths change.</p> 
         <p>If there is no path - there is <b>NO</b> path :-P</p>`;
         break;
     }

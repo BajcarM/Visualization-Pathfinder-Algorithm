@@ -1,41 +1,46 @@
 .tile {
-  border: 1px solid grey;
+  border: 1px solid $color-background;
   background-color: #fff;
 
   &__node {
     @include tile-background;
-    background-color: rgb(130, 255, 255);
-    border: 1px solid rgb(130, 255, 255);
+    background-color: $color-node;
+    border: 1px solid $color-node;
+    border-radius: 50%;
     background-image: url(../images/locator-icon.png);
+    z-index: 5;
+    box-shadow: 0 0 5px 8px $color-node;
   }
 
   &__wall {
     @include tile-background;
-    background-color: rgb(47, 47, 47);
+    background-color: $color-disabled;
+    border-color: $color-disabled;
     background-image: url(../images/wall-grey.png);
   }
 
   &__visited-1 {
     @include tile-background;
     animation: visited-1 0.4s ease;
-    background-color: rgb(111, 255, 118);
+    background-color: $color-visited-1;
+    
   }
 
   &__visited-2 {
     @include tile-background;
     animation: visited-2 0.4s ease;
-    background-color: rgb(208, 255, 98);
+    background-color: $color-visited-2;
   }
 
   &__path-1 {
     @include tile-background;
-    background-color: rgb(211, 109, 255);
-    border: 1px solid rgb(211, 109, 255);
+    background-color: $color-path-1;
+    border: 1px solid $color-path-1;
   }
 
   &__path-2 {
     @include tile-background;
-    background-color: rgb(255, 78, 167);
-    border: 1px solid rgb(255, 78, 167);
+    background-color: $color-path-2;
+    border: 1px solid $color-path-2;
   }
 }

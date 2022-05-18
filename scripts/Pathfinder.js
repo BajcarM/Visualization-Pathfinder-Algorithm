@@ -79,9 +79,9 @@ export default class Pathfinder {
           path.unshift(currentStep[up]);
         } else if (down >= 0) {
           path.unshift(currentStep[down]);
-        } else if (right >= 0) {
+        } else if (right >= 0 && (path[0] + 1) % colsCount !== 0) {
           path.unshift(currentStep[right]);
-        } else if (left >= 0) {
+        } else if (left >= 0 && path[0] % colsCount !== 0) {
           path.unshift(currentStep[left]);
         }
       }
