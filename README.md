@@ -6,7 +6,7 @@ Nodes are movable via click and drag, paths will change accordingly.
 
 Press Start button to see the algorithm step by step.
 
-
+Try it yourself!!
 https://bajcarm.github.io/Visualization-Pathfinder-Algorithm/
 
 
