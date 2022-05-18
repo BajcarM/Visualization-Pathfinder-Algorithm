@@ -317,7 +317,7 @@ export default class Gameboard {
       clearInterval(displayInterval);
       this.#state = "ready";
       this.#targetControls.working = this.#state;
-    }, 30);
+    }, 20);
   }
 
   buttonClicked(id) {

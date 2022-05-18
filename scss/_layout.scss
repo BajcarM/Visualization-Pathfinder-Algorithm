@@ -20,3 +20,9 @@ section {
   grid-row: 2;
   bottom: 0;
 }
+
+@media   (max-width: 1200px) {
+  section{
+    background-color: #fff;
+  }
+}
